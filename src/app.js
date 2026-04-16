@@ -65,7 +65,13 @@ const io = new Server(server, {
     
 });
 */
+app.use(express.static(path.join(__dirname, '../dist/projetoNovo/browser')));
+
 app.use('/api', routes);
+
+app.use((req, res)=>{
+  res.sendFile(path.join(__dirname, '../dist/projetoNovo/browser/index.html'));
+});
 
 
 module.exports = app;
