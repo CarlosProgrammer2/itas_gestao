@@ -65,6 +65,9 @@ const io = new Server(server, {
     
 });
 */
+
+const path = require('path');
+
 app.use(express.static(path.join(__dirname, '../dist/projetoNovo/browser')));
 
 app.use('/api', routes);
