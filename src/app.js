@@ -7,11 +7,7 @@ const cors = require('cors');
 
 const session = require('express-session');
 
-const http = require('http');
-
 const routes = require('./routes');
-
-const { Server } = require('socket.io');
 
 const app = express();
 
@@ -27,10 +23,6 @@ app.use((req, res, next)=>{
 });
 
 */
-
-
-
-
 
 //Middleware necessários
 app.use(cors({
