@@ -15,6 +15,8 @@ const { Server } = require('socket.io');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 
 /*
 app.use((req, res, next)=>{
@@ -27,37 +29,38 @@ app.use((req, res, next)=>{
 });
 
 */
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
 
-
-
-
-
-//Middleware necessários
+// Middleware necessários
 app.use(cors({
-    origin: process.env.CONEXAO,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['content-type', 'Authorization'],
-    credentials: true
-}));// conexão com o frontend
-app.use(express.json()); //trata toda estrutura em json
-app.use(express.urlencoded({ extended: true }))
-// Configurações da sessão
-app.use(session({
-secret: process.env.KeySession, //Chave secreta
-resave: false, // em false, não salva a sessão se não mudou
-saveUninitialized: false, // em false, não cria sessão vazia
-cookie:{
-    secure: false, //true quando tiver em produção
-    httpOnly: true, //Impede ataques de injeção de javascript
-    sameSite: 'none', // Strict -> Só permite o envio de cookies que veem do mesmo domínio
-    maxAge: 1000 * 60 * 60 // Equivale a 1 hora  
-}
+  origin: process.env.CONEXAO,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
+app.use(express.json());
+app.use(cookieParser());
 
-
-
-
+// Configurações da sessão
+app.use(session({
+  store: new pgSession({
+    pool: pool,
+    tableName: 'session'
+  }),
+  secret: process.env.KeySession, 
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    secure: true,       // exige HTTPS em produção
+    httpOnly: true,     // protege contra XSS
+    sameSite: 'none',   // necessário se front/back têm domínios diferentes
+    maxAge: 1000 * 60 * 60 // 1 hora
+  }
+}));
 //const server = http.createServer(app);
 /*
 const io = new Server(server, {
@@ -67,7 +70,7 @@ const io = new Server(server, {
     
 });
 */
-app.use(routes);
+app.use('/api', routes);
 
 
 module.exports = app;
