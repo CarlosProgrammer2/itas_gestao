@@ -5,7 +5,12 @@ require('dotenv').config();
 
 const cors = require('cors');
 
+const cookieParser = require('cookie-parser');
+
 const session = require('express-session');
+
+const { Pool } = require('pg');
+const pgSession = require('connect-pg-simple')(session);
 
 
 const routes = require('./routes');
