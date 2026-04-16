@@ -13,6 +13,7 @@
   "description": "",
   "dependencies": {
     "base64url": "^3.0.1",
+    "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.6",
     "cookie-parser": "^1.4.6",
     "dotenv": "^17.2.3",
