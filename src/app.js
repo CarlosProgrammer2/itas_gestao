@@ -7,11 +7,10 @@ const cors = require('cors');
 
 const session = require('express-session');
 
-const http = require('http');
 
 const routes = require('./routes');
 
-const { Server } = require('socket.io');
+
 
 const app = express();
 
@@ -50,9 +49,6 @@ app.use(session({
     maxAge: 1000 * 60 * 60 // 1 hora
   }
 }));
-
-
-
 
 
 //const server = http.createServer(app);
